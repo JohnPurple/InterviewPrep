@@ -1,0 +1,225 @@
+https://prepare.sh/engineering/data-engineering/company/66505b3a8701fdcb79c5ce8d
+Upvote 0 Downvote
+Retrieve Top 5 Highest Salaries Data Engineer @ Netflix Difficulty Medium
+
+Write an SQL query to retrieve the top 5 highest salaries from the employees table. The table has the following columns: employee_id, name, and salary.
+Solution:
+
+SELECT employee_id, name, salary
+FROM employees
+ORDER BY salary DESC
+LIMIT 5;
+
+Explanation:
+
+    The ORDER BY salary DESC clause sorts the employees by salary in descending order, and the LIMIT 5 clause fetches the top 5 records.
+
+Upvote 0 Downvote
+Calculate Average Salary by Department Data Engineer @ Netflix Difficulty Medium
+
+Write an SQL query to find the average salary of employees in each department from a table employees with columns department_id, employee_id, and salary.
+Solution:
+
+SELECT department_id, AVG(salary) AS average_salary
+FROM employees
+GROUP BY department_id;
+
+Explanation:
+
+    The GROUP BY department_id clause groups the employees by department, and the AVG(salary) function calculates the average salary for each department.
+
+Upvote 0 Downvote
+Find Duplicate Email Addresses Data Engineer @ Netflix Difficulty Medium
+
+Write an SQL query to find all email addresses that appear more than once in a users table with an email column.
+Solution:
+
+SELECT email, COUNT(*)
+FROM users
+GROUP BY email
+HAVING COUNT(*) > 1;
+
+Explanation:
+
+    The HAVING clause filters groups to include only those with more than one occurrence.
+
+Upvote 0 Downvote
+Identify Customers with Orders in Multiple Years Data Engineer @ Netflix Difficulty Hard
+
+Write an SQL query to identify customers who have placed orders in multiple years. The orders table has columns order_id, customer_id, and order_date.
+Solution:
+
+SELECT customer_id
+FROM orders
+GROUP BY customer_id
+HAVING COUNT(DISTINCT YEAR(order_date)) > 1;
+
+Explanation:
+
+    The GROUP BY customer_id clause groups the orders by customer, and the HAVING COUNT(DISTINCT YEAR(order_date)) > 1 clause ensures that only customers with orders in multiple years are selected.
+
+Upvote 0 Downvote
+SQL Coding Case for Gift Card Program Data Engineer @ Netflix Difficulty Medium
+
+You are given two tables: gift_cards and transactions. The gift_cards table has columns card_id, issued_date, and initial_balance. The transactions table has columns transaction_id, card_id, transaction_date, and amount. Write an SQL query to calculate the remaining balance on each gift card as of the current date.
+Solution:
+
+SELECT 
+    g.card_id, 
+    g.initial_balance - COALESCE(SUM(t.amount), 0) AS remaining_balance
+FROM 
+    gift_cards g
+LEFT JOIN 
+    transactions t ON g.card_id = t.card_id
+GROUP BY 
+    g.card_id, g.initial_balance;
+
+Explanation:
+
+    The LEFT JOIN ensures that all gift cards are included, even if there are no transactions.
+    The COALESCE(SUM(t.amount), 0) function calculates the total amount spent from each card, defaulting to 0 if there are no transactions.
+    The remaining balance is computed by subtracting the total amount spent from the initial balance.
+
+Upvote 0 Downvote
+Metrics Case Study for Gift Card Program Data Engineer @ Netflix Difficulty Medium
+
+As part of a hypothetical gift card program, you are asked to analyze the performance of the program. Key metrics to calculate include:
+
+    Total number of gift cards issued
+    Total value of gift cards issued
+    Total value of transactions
+    Average remaining balance per gift card Provide SQL queries for each metric.
+
+Solution:
+1. Total Number of Gift Cards Issued
+
+SELECT COUNT(*) AS total_gift_cards_issued
+FROM gift_cards;
+
+2. Total Value of Gift Cards Issued
+
+SELECT SUM(initial_balance) AS total_value_issued
+FROM gift_cards;
+
+3. Total Value of Transactions
+
+SELECT SUM(amount) AS total_value_transactions
+FROM transactions;
+
+4. Average Remaining Balance per Gift Card
+
+WITH card_balances AS (
+    SELECT 
+        g.card_id, 
+        g.initial_balance - COALESCE(SUM(t.amount), 0) AS remaining_balance
+    FROM 
+        gift_cards g
+    LEFT JOIN 
+        transactions t ON g.card_id = t.card_id
+    GROUP BY 
+        g.card_id, g.initial_balance
+)
+SELECT AVG(remaining_balance) AS average_remaining_balance
+FROM card_balances;
+
+Explanation:
+
+    The first query counts the total number of gift cards issued.
+    The second query calculates the total initial value of all issued gift cards.
+    The third query sums the total value of all transactions.
+    The fourth query first calculates the remaining balance for each gift card and then computes the average remaining balance across all gift cards.
+
+Upvote 0 Downvote
+A/B Testing Case Study Data Scientist @ Netflix Difficulty Hard
+
+You are tasked with designing an A/B test to evaluate whether hiring linguists to produce subtitles for shows increases user engagement. Describe the steps you would take to design and implement this A/B test, including how you would measure success.
+Solution:
+A/B Testing Design and Implementation
+
+    Define Hypothesis:
+        Null Hypothesis (H0): Hiring linguists to produce subtitles does not increase user engagement.
+        Alternative Hypothesis (H1): Hiring linguists to produce subtitles increases user engagement.
+
+    Identify Metrics:
+        Primary Metric: Average watch time per user.
+        Secondary Metrics: User retention rate, user satisfaction score, number of shows watched per user.
+
+    Design Experiment:
+        Control Group: Users who watch shows with machine-generated subtitles.
+        Treatment Group: Users who watch shows with linguist-produced subtitles.
+        Randomly assign users to control and treatment groups to ensure that each group is statistically equivalent.
+
+    Implement Test:
+        Ensure that both groups have access to the same content, with the only difference being the type of subtitles.
+        Run the experiment for a sufficient duration to collect meaningful data (e.g., several weeks to account for varying viewing habits).
+
+    Collect Data:
+        Gather data on the defined metrics from both control and treatment groups.
+
+    Analyze Results:
+        Use statistical tests (e.g., t-test) to compare the metrics between the control and treatment groups.
+        Determine if there is a statistically significant difference in user engagement metrics between the two groups.
+
+    Interpret Results:
+        If the primary metric shows a significant increase in the treatment group compared to the control group, we can conclude that hiring linguists to produce subtitles positively impacts user engagement.
+        If there is no significant difference, we fail to reject the null hypothesis and conclude that linguist-produced subtitles do not significantly affect user engagement.
+
+    Report Findings:
+        Summarize the results, including statistical significance, effect sizes, and potential implications for the business.
+
+Upvote 0 Downvote
+Metric Design for Hiring Linguists to Produce Subtitles Data Scientist @ Netflix Difficulty Hard
+
+Design a set of metrics to evaluate the effectiveness of hiring linguists to produce subtitles for Netflix shows. Explain why each metric is important and how it would be measured.
+Solution:
+Metrics to Evaluate Effectiveness of Hiring Linguists
+
+    Average Watch Time per User:
+        Importance: This metric measures overall user engagement with the content. If users spend more time watching shows, it indicates higher engagement and satisfaction.
+        Measurement: Calculate the total watch time divided by the number of users over a specific period.
+
+    User Retention Rate:
+        Importance: This metric measures how well the subtitles contribute to keeping users on the platform over time. Higher retention rates suggest that users find value in the linguist-produced subtitles.
+        Measurement: Calculate the percentage of users who continue to subscribe to Netflix after a certain period (e.g., one month) compared to the initial user base.
+
+    User Satisfaction Score:
+        Importance: This metric measures user satisfaction with the subtitles. High satisfaction scores indicate that users prefer linguist-produced subtitles over machine-generated ones.
+        Measurement: Use surveys or feedback forms to gather user satisfaction scores specifically related to the subtitles.
+
+    Number of Shows Watched per User:
+        Importance: This metric measures the breadth of engagement with the content. If users watch more shows, it suggests that the subtitles are enhancing their viewing experience across multiple shows.
+        Measurement: Calculate the average number of different shows watched per user over a specific period.
+
+    Churn Rate:
+        Importance: This metric measures the rate at which users cancel their subscriptions. A lower churn rate indicates that users are more satisfied and likely to remain subscribers due to the improved subtitles.
+        Measurement: Calculate the percentage of users who cancel their subscriptions over a specific period.
+
+    Engagement with Subtitled Content:
+        Importance: This metric specifically measures how often users engage with content that has linguist-produced subtitles compared to content without subtitles or with machine-generated subtitles.
+        Measurement: Calculate the watch time and number of views for subtitled content versus non-subtitled content.
+
+Upvote 0 Downvote
+SQL Queries to Find Time Difference Between Two Events Data Engineer @ Netflix Difficulty Medium
+
+Given a table events with columns event_id, user_id, event_type, and event_time, write an SQL query to find the time difference between two specific types of events for each user. For example, calculate the time difference between 'login' and 'logout' events for each user.
+Solution:
+
+SELECT 
+    e1.user_id, 
+    TIMESTAMPDIFF(MINUTE, e1.event_time, e2.event_time) AS time_difference
+FROM 
+    events e1
+JOIN 
+    events e2 ON e1.user_id = e2.user_id
+WHERE 
+    e1.event_type = 'login' AND e2.event_type = 'logout'
+      AND e1.event_time < e2.event_time
+ORDER BY 
+    e1.user_id;
+
+Explanation:
+
+    The JOIN operation pairs each 'login' event with the corresponding 'logout' event for the same user.
+    The WHERE clause ensures that we only consider 'login' and 'logout' event pairs where the 'login' event occurs before the 'logout' event.
+    The TIMESTAMPDIFF function calculates the difference in minutes between the two event times.
+
